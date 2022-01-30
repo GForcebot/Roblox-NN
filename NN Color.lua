@@ -174,6 +174,7 @@ for i = 1,3 do
 	table.insert(layers,neuron)
 end
 table.insert(NeuralNetwork,layers)
+
 	local debris = game:GetService("Debris")
 	local max = 1016.8157
 	local worldmodel = Instance.new("WorldModel",script)
