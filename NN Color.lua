@@ -1,4 +1,5 @@
 oldtime = os.time()
+
 --time coversions
 function tomins(timeamount)
 	return (timeamount)/60
