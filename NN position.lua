@@ -1,13 +1,13 @@
 --Neural Network made by ChickenSauceSandwich, Discord: Bald man with no hair#8606
 --edited by me, GForcebot, Discord: G Kitteh Cat#7884
 local NeuralNetwork = {}
-	function bool2int(bool)
-		if(bool == true) then
+function bool2int(bool)
+	if(bool == true) then
 		return 1
 	else
 		return 0
 	end
-	end
+end
 local learningRate = .15
 --sigmoid activation function
 function sigmoid(activation)
@@ -196,5 +196,6 @@ for i = 1,math.huge do
 		debris:AddItem(block,.1)
 	else
 		print("Try # "..i.. " did it.")
+		break
 	end
-	end
+end
