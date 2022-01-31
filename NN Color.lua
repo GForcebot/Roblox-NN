@@ -200,7 +200,7 @@ task.spawn(function()
 	end
 end)
 for i = 1,math.huge do
-task.wait()
+task.wait(.01)
 		--block.Position = Vector3.one*math.random(-100,100)
 		--block.Size = Vector3.one*math.random(0,100)
 		local desired = color
