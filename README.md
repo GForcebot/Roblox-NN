@@ -1,3 +1,2 @@
 # Roblox-NN
-Scripts that have a neural network. 
-Usable in Void Script Builder(A Roblox game)
+A neural network with 2 scripts, examples, that are usable in Void Script Builder(A Roblox game)
