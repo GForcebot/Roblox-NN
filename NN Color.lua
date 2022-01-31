@@ -19,6 +19,7 @@ end
 function toyears(timeamount)
 	return tomonths(timeamount)/12.008219178
 end
+
 --Neural Network made by ChickenSauceSandwich, Discord: Bald man with no hair#8606
 --edited by me, GForcebot, Discord: G Kitteh Cat#7884
 local NeuralNetwork = {}
