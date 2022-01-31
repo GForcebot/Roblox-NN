@@ -1,6 +1,10 @@
 	oldtime = os.time()
---time coversions
-function tohours(timeamount)
+	local NeuralNetwork = {}
+	--time coversions
+	function tomins(timeamount)
+		return (timeamount)/60
+	end
+	function tohours(timeamount)
 		return tomins(timeamount)/60
 	end
 	function todays(timeamount)
@@ -15,11 +19,6 @@ function tohours(timeamount)
 	function toyears(timeamount)
 		return tomonths(timeamount)/12.008219178
 	end
---Neural Network made by ChickenSauceSandwich, Discord: Bald man with no hair#8606
---edited by me, GForcebot, Discord: G Kitteh Cat#7884	
-local NeuralNetwork = {}
-	
-	
 	function bool2int(bool)
 		if(bool == true) then
 			return 1
@@ -66,17 +65,23 @@ local NeuralNetwork = {}
 	end
 
 	--get slope of activation
-	function transferDerivative(activationf, activation)
-		if(activationf=="sigmoid") then
-			activation = sigmoid(activation) * (1 - sigmoid(activation))
-		elseif(activationf=="tanh") then
-			activation = 1 - math.tanh(activation)^2
-		elseif(activationf=="ReLU") then
-			activation = 1 * bool2int((activation > 0))
+function transferDerivative(activationf, activation)
+	if(activationf=="sigmoid") then
+		activation = sigmoid(activation) * (1 - sigmoid(activation))
+	elseif(activationf=="tanh") then
+		activation = 1 - math.tanh(activation)^2
+	elseif(activationf=="ReLU") then
+		if(activation < 0) then
+			activation = 0.01
+		else
+			activation = 1
 		end
-
-		return activation
+	else
+		activation = 1
 	end
+
+	return activation
+end
 local activationFuncs = {"sigmoid","ReLU","ReLU","sigmoid"}
 --calculates network output
 function propogateForward(input)
