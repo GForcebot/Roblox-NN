@@ -28,18 +28,18 @@ function initNeuron(inputs)
 	return neuron
 end
 
-function getActivation(neuron, activation)
+function getActivation(neuron, activationf)
 	local activation = neuron.weights[#neuron.weights]
 
 	for w=1,#neuron.weights - 1 do
 		activation += neuron.inputs[w] * neuron.weights[w]
 	end
 
-	if(activation=="sigmoid") then
+	if(activationf=="sigmoid") then
 		activation = sigmoid(activation)
-	elseif(activation=="tanh") then
+	elseif(activationf=="tanh") then
 		activation = math.tanh(activation)
-	elseif(activation=="ReLU") then
+	elseif(activationf=="ReLU") then
 		activation = math.max(activation * 0.01, activation)
 	end
 
