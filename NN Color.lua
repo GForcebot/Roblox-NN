@@ -74,12 +74,18 @@ function transferDerivative(activationf, activation)
 	elseif(activationf=="tanh") then
 		activation = 1 - math.tanh(activation)^2
 	elseif(activationf=="ReLU") then
-		activation = 1 * bool2int((activation > 0))
+		if(activation < 0) then
+			activation = 0.01
+		else
+			activation = 1
+		end
+	else
+		activation = 1
 	end
 
 	return activation
 end
-
+local activationFuncs = {"sigmoid","ReLU","ReLU","sigmoid"}
 --calculates network output
 function propogateForward(input)
 	local oldInput = {}
@@ -95,7 +101,7 @@ function propogateForward(input)
 			end
 
 			--get activation
-			local activation = getActivation(neuron,"sigmoid")
+			local activation = getActivation(neuron,activationFuncs[l])
 			neuron.activation = activation
 			table.insert(newInput, activation)
 		end
@@ -125,7 +131,7 @@ function propogateBackwards(label)
 		end
 
 		for n,neuron in pairs(NeuralNetwork[l]) do
-			neuron.delta = losses[n] * transferDerivative("sigmoid", neuron.activation)
+			neuron.delta = losses[n] * transferDerivative(activationFuncs[l], neuron.activation)
 		end
 
 		losses = {}
