@@ -60,7 +60,7 @@ function getActivation(neuron, activationf)
 		activation = sigmoid(activation)
 	elseif(activationf=="tanh") then
 		activation = math.tanh(activation)
-	elseif(activation=="ReLU") then
+	elseif(activationf=="ReLU") then
 		activation = math.max(activation * 0.01, activation)
 	end
 
