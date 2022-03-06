@@ -259,5 +259,3 @@ text.TextColor = BrickColor.new(Color3.new(-output[1],-output[2],-output[3]))
 tween:Play()
 tween.Completed:Wait()
 tween:Pause()
-
-
