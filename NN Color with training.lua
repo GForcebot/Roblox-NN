@@ -217,7 +217,7 @@ end)
 		--display.BrickColor = BrickColor.new(clors)
 		text.TextColor3 = Color3.new(0,1, 0)
 		block.BrickColor = BrickColor.new(Color3.new(output[1],output[2],output[3]))
-	text.Text =  string.format("Color:%s \n%.2f%% Right",BrickColor.new(Color3.new(output[1],output[2],output[3])).Name ,math.abs(100-((((( color.R+ color.G+ color.B)/3)-((output[1]+output[2]+output[3])/3))/(( color.R+ color.G+ color.B)/3))*100)))
+	text.Text =  string.format("Color:%s \n%.2f%% Right",BrickColor.new(Color3.new(output[1],output[2],output[3])).Name ,math.abs(100-(math.abs(((( color.R+ color.G+ color.B)/3)-((output[1]+output[2]+output[3])/3))/(( color.R+ color.G+ color.B)/3))*100)))
 		if math.floor((( color.R-output[1])/ color.R)*100) == 0  and math.floor((( color.G-output[2])/ color.G)*100) == 0 and math.floor((( color.B-output[3])/ color.B)*100) == 0 then
 			print("done")
 			print(string.format("%.1f minutes,%.2f seconds, %d miliseconds",((DateTime.now():ToLocalTime().Millisecond-oldtime.Millisecond)*0.001)*0.0166666667,(DateTime.now():ToLocalTime().Millisecond-oldtime.Millisecond)*0.001,(DateTime.now():ToLocalTime().Millisecond-oldtime.Millisecond)))
