@@ -1,16 +1,16 @@
 local oldtime = DateTime.now():ToLocalTime()
 local colorcodes = {1,2,3,5,6,9,11,12,18,21,22,23,24,25,26,27,28,29,36,37,38,39,40,41,42,43,44,45,47,48,49,50,100,101,102,103,104,105,106,107,108,110,111,112,113,115,116,118,119,120,123,124,125,126,127,128,131,133,134,135,136,137,138,140,141,143,145,146,147,148,149,150,151,153,154,157,158,168,176,179,179,180,190,191,193,194,195,196,198,200,208,209,210,211,212,213,216,217,218,219,220,221,222,223,224,225,226,232,268,301,302,303,304,305,306,307,308,309,310,311,312,313,314,315,316,317,318,319,320,321,322,323,324,325,327,328,329,330,331,332,333,334,335,336,337,338,339,340,341,344,345,346,347,348,349,350,351,352,354,355,356,357,358,359,360,361,362,363,364,365,1001,1002,1003,1004,1005,1006,1007,1007,1008,1009,1010,1012,1013,1014,1015,1016,1017,1018,1019,1020,1021,1022,1023,1024,1025,1026,1027,1028,1029,1030,1031,1032}
---Neural Network made by ChickenSauceSandwich, Discord: Bald man with no hair#8606
+--Neural Network originally made by ChickenSauceSandwich, Discord: Bald man with no hair#8606
 --edited by me, GForcebot, Discord: G Kitteh Cat#7884
 local NeuralNetwork = {}
 function bool2int(bool)
-	if(bool == true) then
+	if bool == true then
 		return 1
 	else
 		return 0
 	end
 end
-local learningRate = .001
+local learningRate = .0008
 --sigmoid activation function
 function sigmoid(activation)
 	return 1.0/(1.0+math.exp(-activation))
@@ -37,12 +37,14 @@ function getActivation(neuron, activationf)
 		activation += neuron.inputs[w] * neuron.weights[w]
 	end
 
-	if(activationf=="sigmoid") then
+	if activationf=="sigmoid" then
 		activation = sigmoid(activation)
-	elseif(activationf=="tanh") then
+	elseif activationf=="tanh" then
 		activation = math.tanh(activation)
-	elseif(activationf=="ReLU") then
+	elseif activationf=="LeakyReLU" then
 		activation = math.max(activation * 0.01, activation)
+	elseif activationf=="ReLU" then
+		activation  = math.max(0,activation)
 	end
 
 	return activation
@@ -50,16 +52,22 @@ end
 
 --get slope of activation
 function transferDerivative(activationf, activation)
-	if(activationf=="sigmoid") then
+	if activationf=="sigmoid" then
 		activation = sigmoid(activation) * (1 - sigmoid(activation))
-	elseif(activationf=="tanh") then
+	elseif activationf=="tanh" then
 		activation = 1 - math.tanh(activation)^2
-	elseif(activationf=="ReLU") then
-		if(activation < 0) then
-			activation = 0.1
+	elseif activationf=="LeakyReLU" then
+		if activation < 0 then
+			activation = 0.01
 		else
 			activation = 1
 		end
+	elseif	activationf=="ReLU" then
+		if activation > 0 then
+			return 1
+		else
+			return 0
+		end 
 	else
 		activation = 1
 	end
@@ -73,9 +81,9 @@ function propogateForward(input)
 	for l,layer in pairs(NeuralNetwork) do
 		local newInput = {}
 		for n,neuron in pairs(layer) do
-			if(#neuron.inputs > 0) then neuron.inputs = {} end
+			if #neuron.inputs > 0 then neuron.inputs = {} end
 
-			if(l == 1) then
+			if l == 1 then
 				table.insert(neuron.inputs, input[n])
 			else
 				neuron.inputs = oldInput
@@ -96,7 +104,7 @@ function propogateBackwards(label)
 	local lastLayer = {}
 	for l=#NeuralNetwork,1,-1 do
 		local losses = {}
-		if(l ~= #NeuralNetwork) then
+		if l ~= #NeuralNetwork then
 			for n,neuron in pairs(NeuralNetwork[l]) do
 				--calculate loss of hidden neurons
 				local loss = 0
@@ -142,23 +150,23 @@ end
 table.insert(NeuralNetwork, layers)
 --hidden
 local layers = {}
-for i = 1,3*2 do
+for i = 1,7 do
 	local neuron = {}
 	neuron = initNeuron(3)
 	table.insert(layers,neuron)
 end
 table.insert(NeuralNetwork,layers)
 local layers = {}
-for i = 1,3*2 do
+for i = 1,7 do
 	local neuron = {}
-	neuron = initNeuron(3*2)
+	neuron = initNeuron(7)
 	table.insert(layers,neuron)
 end
 table.insert(NeuralNetwork,layers)
 --output
 local layers = {}
 for i = 1,3 do
-	local neuron = initNeuron(3*2) 
+	local neuron = initNeuron(7) 
 	table.insert(layers,neuron)
 end
 table.insert(NeuralNetwork,layers)
