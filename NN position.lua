@@ -72,7 +72,7 @@ function transferDerivative(activationf, activation)
 
 	return activation
 end
-local activationFuncs = {"sigmoid","ReLU","ReLU","sigmoid"}
+local activationFuncs = {"sigmoid","LeakyReLU","LeakyReLU","sigmoid"}
 --calculates network output
 function propogateForward(input)
 	local oldInput = {}
