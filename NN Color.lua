@@ -8,7 +8,7 @@ function bool2int(bool)
 		return 0
 	end
 end
-local learningRate = .0008
+local learningRate =.15
 --sigmoid activation function
 function sigmoid(activation)
 	return 1.0/(1.0+math.exp(-activation))
