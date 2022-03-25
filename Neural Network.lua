@@ -1,14 +1,14 @@
---Neural Network made by ChickenSauceSandwich, Discord: Bald man with no hair#8606
+--Neural Network originally made by ChickenSauceSandwich, Discord: Bald man with no hair#8606
 --edited by me, GForcebot, Discord: G Kitteh Cat#7884
 local NeuralNetwork = {}
 function bool2int(bool)
-	if(bool == true) then
+	if bool == true then
 		return 1
 	else
 		return 0
 	end
 end
-local learningRate = .15
+local learningRate = .0008
 --sigmoid activation function
 function sigmoid(activation)
 	return 1.0/(1.0+math.exp(-activation))
@@ -35,46 +35,60 @@ function getActivation(neuron, activationf)
 		activation += neuron.inputs[w] * neuron.weights[w]
 	end
 
-	if(activationf=="sigmoid") then
-		activation = sigmoid(activation)
-	elseif(activationf=="tanh") then
-		activation = math.tanh(activation)
-	elseif(activationf=="ReLU") then
-		activation = math.max(activation * 0.01, activation)
-	end
+	ifactivationf=="sigmoid" then
+	activation = sigmoid(activation)
+	elseifactivationf=="tanh" then
+	activation = math.tanh(activation)
+elseif activationf=="LeakyReLU" then
+	activation = math.max(activation * 0.01, activation)
+elseif activationf=="ReLU" then
+	activation  = math.max(0,activation)
+end
 
-	return activation
+return activation
 end
 
 --get slope of activation
 function transferDerivative(activationf, activation)
-	if(activationf=="sigmoid") then
+	if activationf=="sigmoid" then
 		activation = sigmoid(activation) * (1 - sigmoid(activation))
-	elseif(activationf=="tanh") then
+	elseif activationf=="tanh" then
 		activation = 1 - math.tanh(activation)^2
-	elseif(activationf=="ReLU") then
-		activation = 1 * bool2int((activation > 0))
+	elseif activationf=="LeakyReLU" then
+		if activation < 0 then
+			activation = 0.01
+		else
+			activation = 1
+		end
+	elseif	(activationf=="ReLU" then
+		if activation > 0 then
+			return 1
+		else
+			return 0
+		end 
+	else
+		activation = 1
 	end
 
 	return activation
 end
-
+local activationFuncs = {"sigmoid","ReLU","ReLU","sigmoid"}
 --calculates network output
 function propogateForward(input)
 	local oldInput = {}
 	for l,layer in pairs(NeuralNetwork) do
 		local newInput = {}
 		for n,neuron in pairs(layer) do
-			if(#neuron.inputs > 0) then neuron.inputs = {} end
+			if #neuron.inputs > 0 then neuron.inputs = {} end
 
-			if(l == 1) then
+			if l == 1 then
 				table.insert(neuron.inputs, input[n])
 			else
 				neuron.inputs = oldInput
 			end
 
 			--get activation
-			local activation = getActivation(neuron,"sigmoid")
+			local activation = getActivation(neuron,activationFuncs[l])
 			neuron.activation = activation
 			table.insert(newInput, activation)
 		end
@@ -88,7 +102,7 @@ function propogateBackwards(label)
 	local lastLayer = {}
 	for l=#NeuralNetwork,1,-1 do
 		local losses = {}
-		if(l ~= #NeuralNetwork) then
+		if l ~= #NeuralNetwork then
 			for n,neuron in pairs(NeuralNetwork[l]) do
 				--calculate loss of hidden neurons
 				local loss = 0
@@ -104,7 +118,7 @@ function propogateBackwards(label)
 		end
 
 		for n,neuron in pairs(NeuralNetwork[l]) do
-			neuron.delta = losses[n] * transferDerivative("sigmoid", neuron.activation)
+			neuron.delta = losses[n] * transferDerivative(activationFuncs[l], neuron.activation)
 		end
 
 		losses = {}
