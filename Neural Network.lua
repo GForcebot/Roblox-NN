@@ -35,13 +35,13 @@ function getActivation(neuron, activationf)
 		activation += neuron.inputs[w] * neuron.weights[w]
 	end
 
-	ifactivationf=="sigmoid" then
+	if activationf=="sigmoid" then
 	activation = sigmoid(activation)
-	elseifactivationf=="tanh" then
+	elseif activationf=="tanh" then
 	activation = math.tanh(activation)
-elseif activationf=="LeakyReLU" then
+	elseif activationf=="LeakyReLU" then
 	activation = math.max(activation * 0.01, activation)
-elseif activationf=="ReLU" then
+	elseif activationf=="ReLU" then
 	activation  = math.max(0,activation)
 end
 
@@ -60,7 +60,7 @@ function transferDerivative(activationf, activation)
 		else
 			activation = 1
 		end
-	elseif	(activationf=="ReLU" then
+	elseif	activationf=="ReLU" then
 		if activation > 0 then
 			return 1
 		else
