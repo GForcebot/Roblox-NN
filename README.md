@@ -1,2 +1,2 @@
 # Roblox-NN
-A neural network with 3 examples. All three examples are usable in Void Script Builder(A Roblox game)
+A neural network with 4 examples. All 3 examples are usable in Void Script Builder(A Roblox game)
