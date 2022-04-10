@@ -205,8 +205,7 @@ text.TextScaled = true
 text.Text = ""
 local desired
 local epoch = 0
-local fails = 0
-		while task.wait() do
+	while task.wait() do
 		epoch += 1
 		desired = owner.Character.HumanoidRootPart.Position
 		--desired = Vector3.one*20
@@ -307,4 +306,3 @@ local fails = 0
 			--block.Transparency = .99
 end
 print("Done")
-	end
