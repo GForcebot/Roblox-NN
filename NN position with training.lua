@@ -37,16 +37,16 @@ function getActivation(neuron, activationf)
 	end
 
 	if activationf=="sigmoid" then
-	activation = sigmoid(activation)
+		activation = sigmoid(activation)
 	elseif activationf=="tanh" then
-	activation = math.tanh(activation)
-elseif activationf=="LeakyReLU" then
-	activation = math.max(activation * 0.01, activation)
-elseif activationf=="ReLU" then
-	activation  = math.max(0,activation)
-end
+		activation = math.tanh(activation)
+	elseif activationf=="LeakyReLU" then
+		activation = math.max(activation * 0.01, activation)
+	elseif activationf=="ReLU" then
+		activation  = math.max(0,activation)
+	end
 
-return activation
+	return activation
 end
 
 --get slope of activation
@@ -205,104 +205,105 @@ text.TextScaled = true
 text.Text = ""
 local desired
 local epoch = 0
-	while task.wait() do
-		epoch += 1
-		desired = owner.Character.HumanoidRootPart.Position
-		--desired = Vector3.one*20
-		--desired = owner.Character.HumanoidRootPart.Position+(owner.Character.HumanoidRootPart.CFrame.LookVector*math.random(-2,2))
-		--desired = Vector3.one*math.random(0,20)
-		--desired = Vector3.new(math.random(-1000,1000),math.random(-1000,1000),math.random(-1000,1000))
-		--desired = Vector3.new(math.random(-100,100),math.random(-100,100),math.random(-100,100))
-		--desired = Vector3.new(math.random(-10,10),math.random(-10,10),math.random(10,10))
-		--desired = Vector3.new(math.random(0,20),math.random(0,20),math.random(0,20))
-		--desired = Vector3.one
-		display.CFrame =  owner.Character.HumanoidRootPart.CFrame * CFrame.new(0,0,-5)
+local fails = 0
+while task.wait() do
+	epoch += 1
+	desired = owner.Character.HumanoidRootPart.Position
+	--desired = Vector3.one*20
+	--desired = owner.Character.HumanoidRootPart.Position+(owner.Character.HumanoidRootPart.CFrame.LookVector*math.random(-2,2))
+	--desired = Vector3.one*math.random(0,20)
+	--desired = Vector3.new(math.random(-1000,1000),math.random(-1000,1000),math.random(-1000,1000))
+	--desired = Vector3.new(math.random(-100,100),math.random(-100,100),math.random(-100,100))
+	--desired = Vector3.new(math.random(-10,10),math.random(-10,10),math.random(10,10))
+	--desired = Vector3.new(math.random(0,20),math.random(0,20),math.random(0,20))
+	--desired = Vector3.one
+	display.CFrame =  owner.Character.HumanoidRootPart.CFrame * CFrame.new(0,0,-5)
 
-		text.TextStrokeTransparency = 0
-		--block.Position = Vector3.one*math.random(-100,100)
-		--block.Size = Vector3.one*math.random(0,100)
-		--1-(desired.X-math.random(-max,max)/desired.X)
-		local output = propogateForward({math.random(-max,max),math.random(-max,max),math.random(-max,max)})
-		--local output = propogateForward({1-(desired.X-math.random(-max,max)/desired.X),1-(desired.Y-math.random(-max,max)/desired.Y),1-(desired.Z-math.random(-max,max)/desired.Z)})
-		--local output = propogateForward({math.random(-max,max)/desired.X,math.random(-max,max)/desired.Y,math.random(-max,max)/desired.Z})
-		propogateBackwards({1,1,1})
-		updateNetwork()
+	text.TextStrokeTransparency = 0
+	--block.Position = Vector3.one*math.random(-100,100)
+	--block.Size = Vector3.one*math.random(0,100)
+	--1-(desired.X-math.random(-max,max)/desired.X)
+	local output = propogateForward({math.random(-max,max),math.random(-max,max),math.random(-max,max)})
+	--local output = propogateForward({1-(desired.X-math.random(-max,max)/desired.X),1-(desired.Y-math.random(-max,max)/desired.Y),1-(desired.Z-math.random(-max,max)/desired.Z)})
+	--local output = propogateForward({math.random(-max,max)/desired.X,math.random(-max,max)/desired.Y,math.random(-max,max)/desired.Z})
+	propogateBackwards({1,1,1})
+	updateNetwork()
+	local block = Instance.new("SpawnLocation",worldmodel)
+	block.Enabled = false
+	block.BrickColor = BrickColor.Black()
+	block.Material = Enum.Material.SmoothPlastic
+	--block.Material = Enum.Material.Neon
+	block.Size = Vector3.one
+	block.Position = Vector3.new(output[1]*desired.X,output[2]*desired.Y,output[3]*desired.Z)
+	local success = Vector3.new(output[1]*desired.X,output[2]*desired.Y,output[3]*desired.Z) == desired
+	local errx,erry,errz = math.abs((desired.X-(output[1]*desired.X))/desired.X),math.abs((desired.Y-(output[2]*desired.Y))/desired.Y),math.abs((desired.Z-(output[3]*desired.Z))/desired.Z)
+	--block.Size = Vector3.one*math.abs(err)
+	--block.Transparency = math.abs(((errx+erry+errz)/3))
+	block.Color = Color3.new(0, 1, 0):Lerp(Color3.new(0.666667, 0, 0),math.abs(((errx+erry+errz)/3)))
+	debris:AddItem(block,5)
+	--local errorblock = Instance.new("SpawnLocation",worldmodel)
+	--errorblock.Enabled = false
+	--errorblock.Material = Enum.Material.SmoothPlastic
+	--errorblock.Size = Vector3.one
+	--errorblock.Color = Color3.new(0, 0, 0)
+	--errorblock.CFrame =  CFrame.new(Vector3.zero)* CFrame.new(epoch*errorblock.Size.X,(100*math.abs(1-((errx+erry+errz)/3)))+2.5,0)
+
+	text.TextColor3 =  Color3.new(0, 1, 0):Lerp(Color3.new(0.666667, 0, 0),math.abs(((errx+erry+errz)/3)))
+	--text.TextColor3 = Color3.new(0.333333, 1, 0):Lerp(Color3.new(0.666667, 0, 0),math.abs(err))
+	text.Text =  
+		--string.format("Try %d made it? %s \nDistance: %.3f",epoch,tostring(success),(desired-Vector3.new(output[1]*desired.X,output[2]*desired.Y,output[3]*desired.Z)).Magnitude)
+		--string.format("%d Minutes\nNeural Network:\nEpoch %d: \n%.2f Accurate",math.abs(oldtime.Minute-DateTime.now():ToLocalTime().Minute),epoch,100*math.abs(1-(errx+erry+errz)/3))
+		string.format("Neural Network:\nEpoch %d: \n%.2f Accurate",epoch,100*math.abs(1-(errx+erry+errz)/3))
+	--string.format("Neural Network:\nEpoch %d: \n%.2f%% X Accurate\n%.2f%% Y Accurate\n%.2f%% Z Accurate",epoch,100*math.abs(1-errx),100*math.abs(1-erry),100*math.abs(1-errz))
+
+
+	--print(desired-Vector3.new(output[1],output[2],output[3]))
+	--if  (desired-Vector3.new(output[1]*desired.X,output[2]*desired.Y,output[3]*desired.Z)).Magnitude <= .00001 then
+	--if  DateTime.now():ToLocalTime().Minute-oldtime.Minute>= 2 then
+
+	if 100*(math.abs(1-(errx+erry+errz)/3)) > 99.80 then
+		--print(string.format("%.1f minutes,%.2f seconds",math.abs(((DateTime.now():ToLocalTime().Millisecond-oldtime.Millisecond)*0.1)*0.166666667),math.abs((DateTime.now():ToLocalTime().Millisecond-oldtime.Millisecond)*0.1)))
+		--block.BrickColor = BrickColor.Green()
+		--text.TextColor = BrickColor.Green()
+		print(string.format("Epoch %d did it. %.2f%% Accurate\n It took %d minutes and %d seconds.\n%.4f Studs Away",epoch,100*(math.abs(1-(errx+erry+errz)/3)),math.abs(DateTime.now():ToLocalTime().Minute-oldtime.Minute),math.abs(DateTime.now():ToLocalTime().Second-oldtime.Second),(desired-Vector3.new(output[1]*desired.X,output[2]*desired.Y,output[3]*desired.Z)).Magnitude))
 		local block = Instance.new("SpawnLocation",worldmodel)
 		block.Enabled = false
-		block.BrickColor = BrickColor.Black()
-		block.Material = Enum.Material.SmoothPlastic
-		--block.Material = Enum.Material.Neon
-		block.Size = Vector3.one
-		block.Position = Vector3.new(output[1]*desired.X,output[2]*desired.Y,output[3]*desired.Z)
-		local success = Vector3.new(output[1]*desired.X,output[2]*desired.Y,output[3]*desired.Z) == desired
-		local errx,erry,errz = math.abs((desired.X-(output[1]*desired.X))/desired.X),math.abs((desired.Y-(output[2]*desired.Y))/desired.Y),math.abs((desired.Z-(output[3]*desired.Z))/desired.Z)
-		--block.Size = Vector3.one*math.abs(err)
-		--block.Transparency = math.abs(((errx+erry+errz)/3))
-		block.Color = Color3.new(0, 1, 0):Lerp(Color3.new(0.666667, 0, 0),math.abs(((errx+erry+errz)/3)))
-		debris:AddItem(block,5)
-		--local errorblock = Instance.new("SpawnLocation",worldmodel)
-		--errorblock.Enabled = false
-		--errorblock.Material = Enum.Material.SmoothPlastic
-		--errorblock.Size = Vector3.one
-		--errorblock.Color = Color3.new(0, 0, 0)
-		--errorblock.CFrame =  CFrame.new(Vector3.zero)* CFrame.new(epoch*errorblock.Size.X,(100*math.abs(1-((errx+erry+errz)/3)))+2.5,0)
-		
-		text.TextColor3 =  Color3.new(0, 1, 0):Lerp(Color3.new(0.666667, 0, 0),math.abs(((errx+erry+errz)/3)))
-		--text.TextColor3 = Color3.new(0.333333, 1, 0):Lerp(Color3.new(0.666667, 0, 0),math.abs(err))
-		text.Text =  
-			--string.format("Try %d made it? %s \nDistance: %.3f",epoch,tostring(success),(desired-Vector3.new(output[1]*desired.X,output[2]*desired.Y,output[3]*desired.Z)).Magnitude)
-			--string.format("%d Minutes\nNeural Network:\nEpoch %d: \n%.2f Accurate",math.abs(oldtime.Minute-DateTime.now():ToLocalTime().Minute),epoch,100*math.abs(1-(errx+erry+errz)/3))
-			string.format("Neural Network:\nEpoch %d: \n%.2f Accurate",epoch,100*math.abs(1-(errx+erry+errz)/3))
-		--string.format("Neural Network:\nEpoch %d: \n%.2f%% X Accurate\n%.2f%% Y Accurate\n%.2f%% Z Accurate",epoch,100*math.abs(1-errx),100*math.abs(1-erry),100*math.abs(1-errz))
+		block.Anchored = true
+		block.BrickColor = BrickColor.Green()
+		block.Material = Enum.Material.Neon
+		block.Size = Vector3.one*.05
+		block.Position = desired
+		local block2 = Instance.new("SpawnLocation",worldmodel)
+		block2.Enabled = false
+		block2.Anchored = true
+		block2.BrickColor = BrickColor.Red()
+		block2.Material = Enum.Material.Neon
+		block2.Size = Vector3.one*.05
+		block2.Position = Vector3.new(output[1]*desired.X,output[2]*desired.Y,output[3]*desired.Z)
+		text.Text = " Training Done"
+		break
+		--else
+		--	--local block = Instance.new("SpawnLocation",worldmodel)
+		--	--block.Enabled = false
+		--	--block.Anchored = true
+		--	--block.BrickColor = BrickColor.Green()
+		--	--block.Material = Enum.Material.Neon
+		--	--block.Size = Vector3.one*.05
+		--	--block.Position = desired
+		--	--local block2 = Instance.new("SpawnLocation",worldmodel)
+		--	--block2.Enabled = false
+		--	--block2.Anchored = true
+		--	--block2.BrickColor = BrickColor.Red()
+		--	--block2.Material = Enum.Material.Neon
+		--	--block2.Size = Vector3.one*.05
+		--	--block2.Position = Vector3.new(output[1]*desired.X,output[2]*desired.Y,output[3]*desired.Z)
+		--	fails += 1
+		--	oldtime =  DateTime.now():ToLocalTime()
+		--	training()
+	end
 
-
-		--print(desired-Vector3.new(output[1],output[2],output[3]))
-		--if  (desired-Vector3.new(output[1]*desired.X,output[2]*desired.Y,output[3]*desired.Z)).Magnitude <= .00001 then
-		--if  DateTime.now():ToLocalTime().Minute-oldtime.Minute>= 2 then
-			
-			if 100*(math.abs(1-(errx+erry+errz)/3)) > 99.80 then
-				--print(string.format("%.1f minutes,%.2f seconds",math.abs(((DateTime.now():ToLocalTime().Millisecond-oldtime.Millisecond)*0.1)*0.166666667),math.abs((DateTime.now():ToLocalTime().Millisecond-oldtime.Millisecond)*0.1)))
-				--block.BrickColor = BrickColor.Green()
-				--text.TextColor = BrickColor.Green()
-				print(string.format("Epoch %d did it. %.2f%% Accurate\n It took %d minutes and %d seconds.\n%.4f Studs Away",epoch,100*(math.abs(1-(errx+erry+errz)/3)),math.abs(DateTime.now():ToLocalTime().Minute-oldtime.Minute),math.abs(DateTime.now():ToLocalTime().Second-oldtime.Second),(desired-Vector3.new(output[1]*desired.X,output[2]*desired.Y,output[3]*desired.Z)).Magnitude))
-				local block = Instance.new("SpawnLocation",worldmodel)
-				block.Enabled = false
-				block.Anchored = true
-				block.BrickColor = BrickColor.Green()
-				block.Material = Enum.Material.Neon
-				block.Size = Vector3.one*.05
-				block.Position = desired
-				local block2 = Instance.new("SpawnLocation",worldmodel)
-				block2.Enabled = false
-				block2.Anchored = true
-				block2.BrickColor = BrickColor.Red()
-				block2.Material = Enum.Material.Neon
-				block2.Size = Vector3.one*.05
-				block2.Position = Vector3.new(output[1]*desired.X,output[2]*desired.Y,output[3]*desired.Z)
-				text.Text = " Training Done"
-				break
-			--else
-			--	--local block = Instance.new("SpawnLocation",worldmodel)
-			--	--block.Enabled = false
-			--	--block.Anchored = true
-			--	--block.BrickColor = BrickColor.Green()
-			--	--block.Material = Enum.Material.Neon
-			--	--block.Size = Vector3.one*.05
-			--	--block.Position = desired
-			--	--local block2 = Instance.new("SpawnLocation",worldmodel)
-			--	--block2.Enabled = false
-			--	--block2.Anchored = true
-			--	--block2.BrickColor = BrickColor.Red()
-			--	--block2.Material = Enum.Material.Neon
-			--	--block2.Size = Vector3.one*.05
-			--	--block2.Position = Vector3.new(output[1]*desired.X,output[2]*desired.Y,output[3]*desired.Z)
-			--	fails += 1
-			--	oldtime =  DateTime.now():ToLocalTime()
-			--	training()
-			end
-				
-			--block.BrickColor = BrickColor.Red()
-			--text.TextColor = BrickColor.Red()
-			--block.Transparency = .99
+	--block.BrickColor = BrickColor.Red()
+	--text.TextColor = BrickColor.Red()
+	--block.Transparency = .99
 end
 print("Done")
