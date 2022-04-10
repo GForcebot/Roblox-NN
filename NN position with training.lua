@@ -206,15 +206,16 @@ text.Text = ""
 local desired
 local epoch = 0
 local fails = 0
-local function training()
-	while task.wait() do
+		while task.wait() do
 		epoch += 1
-		--desired = owner.Character.HumanoidRootPart.Position
-		desired = Vector3.one*20
+		desired = owner.Character.HumanoidRootPart.Position
+		--desired = Vector3.one*20
 		--desired = owner.Character.HumanoidRootPart.Position+(owner.Character.HumanoidRootPart.CFrame.LookVector*math.random(-2,2))
-		--desired = Vector3.one*math.random(1,200)
+		--desired = Vector3.one*math.random(0,20)
 		--desired = Vector3.new(math.random(-1000,1000),math.random(-1000,1000),math.random(-1000,1000))
-		--desired = Vector3.new(math.random(1,10),math.random(1,10),math.random(1,10))
+		--desired = Vector3.new(math.random(-100,100),math.random(-100,100),math.random(-100,100))
+		--desired = Vector3.new(math.random(-10,10),math.random(-10,10),math.random(10,10))
+		--desired = Vector3.new(math.random(0,20),math.random(0,20),math.random(0,20))
 		--desired = Vector3.one
 		display.CFrame =  owner.Character.HumanoidRootPart.CFrame * CFrame.new(0,0,-5)
 
@@ -227,11 +228,11 @@ local function training()
 		--local output = propogateForward({math.random(-max,max)/desired.X,math.random(-max,max)/desired.Y,math.random(-max,max)/desired.Z})
 		propogateBackwards({1,1,1})
 		updateNetwork()
-		local block = Instance.new("SpawnLocation",script)
+		local block = Instance.new("SpawnLocation",worldmodel)
 		block.Enabled = false
-		block.Anchored = true
 		block.BrickColor = BrickColor.Black()
 		block.Material = Enum.Material.SmoothPlastic
+		--block.Material = Enum.Material.Neon
 		block.Size = Vector3.one
 		block.Position = Vector3.new(output[1]*desired.X,output[2]*desired.Y,output[3]*desired.Z)
 		local success = Vector3.new(output[1]*desired.X,output[2]*desired.Y,output[3]*desired.Z) == desired
@@ -239,20 +240,20 @@ local function training()
 		--block.Size = Vector3.one*math.abs(err)
 		--block.Transparency = math.abs(((errx+erry+errz)/3))
 		block.Color = Color3.new(0, 1, 0):Lerp(Color3.new(0.666667, 0, 0),math.abs(((errx+erry+errz)/3)))
-		debris:AddItem(block,10)
-		local errorblock = Instance.new("SpawnLocation",script)
-		errorblock.Enabled = false
-		errorblock.Material = Enum.Material.SmoothPlastic
-		errorblock.Anchored = true
-		errorblock.Size = Vector3.one
-		errorblock.Color = Color3.new(0, 0, 0)
-		errorblock.CFrame =  CFrame.new(Vector3.zero)* CFrame.new(epoch*errorblock.Size.X,(100*math.abs(1-((errx+erry+errz)/3)))+2.5,0)
+		debris:AddItem(block,5)
+		--local errorblock = Instance.new("SpawnLocation",worldmodel)
+		--errorblock.Enabled = false
+		--errorblock.Material = Enum.Material.SmoothPlastic
+		--errorblock.Size = Vector3.one
+		--errorblock.Color = Color3.new(0, 0, 0)
+		--errorblock.CFrame =  CFrame.new(Vector3.zero)* CFrame.new(epoch*errorblock.Size.X,(100*math.abs(1-((errx+erry+errz)/3)))+2.5,0)
 		
 		text.TextColor3 =  Color3.new(0, 1, 0):Lerp(Color3.new(0.666667, 0, 0),math.abs(((errx+erry+errz)/3)))
 		--text.TextColor3 = Color3.new(0.333333, 1, 0):Lerp(Color3.new(0.666667, 0, 0),math.abs(err))
 		text.Text =  
 			--string.format("Try %d made it? %s \nDistance: %.3f",epoch,tostring(success),(desired-Vector3.new(output[1]*desired.X,output[2]*desired.Y,output[3]*desired.Z)).Magnitude)
-			string.format("%d Minutes\nNeural Network:\nEpoch %d: \n%.2f Accurate",DateTime.now():ToLocalTime().Minute-oldtime.Minute,epoch,100*math.abs(1-(errx+erry+errz)/3))
+			--string.format("%d Minutes\nNeural Network:\nEpoch %d: \n%.2f Accurate",math.abs(oldtime.Minute-DateTime.now():ToLocalTime().Minute),epoch,100*math.abs(1-(errx+erry+errz)/3))
+			string.format("Neural Network:\nEpoch %d: \n%.2f Accurate",epoch,100*math.abs(1-(errx+erry+errz)/3))
 		--string.format("Neural Network:\nEpoch %d: \n%.2f%% X Accurate\n%.2f%% Y Accurate\n%.2f%% Z Accurate",epoch,100*math.abs(1-errx),100*math.abs(1-erry),100*math.abs(1-errz))
 
 
@@ -275,12 +276,12 @@ local function training()
 				local block2 = Instance.new("SpawnLocation",worldmodel)
 				block2.Enabled = false
 				block2.Anchored = true
-				block2.Color = BrickColor.Red()
+				block2.BrickColor = BrickColor.Red()
 				block2.Material = Enum.Material.Neon
 				block2.Size = Vector3.one*.05
 				block2.Position = Vector3.new(output[1]*desired.X,output[2]*desired.Y,output[3]*desired.Z)
 				text.Text = " Training Done"
-				coroutine.yield("Done")
+				break
 			--else
 			--	--local block = Instance.new("SpawnLocation",worldmodel)
 			--	--block.Enabled = false
@@ -304,22 +305,6 @@ local function training()
 			--block.BrickColor = BrickColor.Red()
 			--text.TextColor = BrickColor.Red()
 			--block.Transparency = .99
-		end
-
-		--else
-		--	print(string.format("Try # %d did it. ",i))
-		--	debris:AddItem(block,.5)
-
-		--end
+end
+print("Done")
 	end
---end
---local trainingroutine = coroutine.create(training)
-local trainingroutine = coroutine.wrap(training)()
-while task.wait() do
-	if trainingroutine == "Done" then
-		text.Text = "Done"
-		print("Done")
-		break
-	end
-	end
-	
