@@ -1,4 +1,4 @@
----Neural Network originally made by ChickenSauceSandwich, Discord: Bald man with no hair#8606
+--Neural Network set up originally made by ChickenSauceSandwich, Discord: Bald man with no hair#8606
 --edited by me, GForcebot, Discord: G Kitteh Cat#7884
 local NeuralNetwork = {}
 function bool2int(bool)
